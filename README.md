@@ -1,5 +1,5 @@
 # ksocket
-This is a kernel space BSD-style socket interface for kernel 3.19. It's developed from an 
+This is a kernel space BSD-style socket interface for kernel 3.19. It's developed from an existing project. Base on it, I add 3.19 kernel support and fix some bugs of it. Enjoy it!
 
 ## Information about the origin project
 ### Site
