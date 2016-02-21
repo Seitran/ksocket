@@ -18,3 +18,8 @@ ksocket is actually a wrapper for some kernel functions related with networking.
 song.xian-guang@hotmail.com
 
 (C)2007-2008, China
+
+## What's new in this project
+As we know, 2.6 kernel is rather old for today. The origin project can not be applied immediately as the kernel is developing. So I decide to develop the old ksocket project, modify the source code to adjust the new kernel, eg,. 3.19 kernel. Besides, the origin project has some bugs, and in this project I fix them together.
+
+
