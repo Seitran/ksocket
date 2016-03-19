@@ -18,8 +18,9 @@
 #include <asm/processor.h>
 #include <asm/uaccess.h>
 #include <linux/in.h>
+#include <linux/kthread.h>
 
-#include <net/ksocket.h>
+#include "../src/ksocket.h"
 
 static int port = 4444;
 module_param(port, int, 0444);
@@ -111,7 +112,7 @@ int tcp_srv(void *arg)
 
 static int ksocket_tcp_srv_init(void)
 {
-	kernel_thread(tcp_srv, NULL, 0);
+	kthread_run(tcp_srv, NULL, "tcp srv init");
 	
 	printk("ksocket tcp srv init ok\n");
 	return 0;

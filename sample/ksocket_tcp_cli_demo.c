@@ -10,6 +10,7 @@
  * 
  */
 #include <linux/kernel.h>
+#include <linux/kthread.h>
 #include <linux/module.h>
 #include <linux/string.h>
 #include <linux/socket.h>
@@ -19,7 +20,7 @@
 #include <asm/uaccess.h>
 #include <linux/in.h>
 
-#include <net/ksocket.h>
+#include "../src/ksocket.h"
 
 int tcp_cli(void *arg)
 {
@@ -72,7 +73,7 @@ int tcp_cli(void *arg)
 
 static int ksocket_tcp_cli_init(void)
 {
-	kernel_thread(tcp_cli, NULL, 0);
+	kthread_run(tcp_cli, NULL, "kthread begin.");
 	
 	printk("ksocket tcp cli init ok\n");
 	return 0;

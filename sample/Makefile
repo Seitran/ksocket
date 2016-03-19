@@ -15,7 +15,8 @@ obj-m := ksocket_tcp_srv_demo.o ksocket_tcp_cli_demo.o
 #ksocket_tcp_srv-objs := ../ksocket.o
 KDIR  := /lib/modules/$(shell uname -r)/build
 PWD   := $(shell pwd)
-
+KBUILD_EXTRA_SYMBOLS += /root/SourceCode/ksocket-0.0.2/src/Module.symvers
+KBUILD_EXTRA_SYMBOLS += /home/xucheng/SourceCode/ksocket-0.0.2/src/Module.symvers
 EXTRA_LDFLAGS := -I../../src
 
 ifeq ($(ADDRSAFE),true)

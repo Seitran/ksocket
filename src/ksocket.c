@@ -128,22 +128,25 @@ error_kaccept:
 ssize_t krecv(ksocket_t socket, void *buffer, size_t length, int flags)
 {
 	struct socket *sk;
-	struct msghdr msg;
-	struct iovec iov;
+	struct msghdr msg = {.msg_flags = 0};
+	struct kvec vec;
+	//struct iovec iov;
 	int ret;
 #ifndef KSOCKET_ADDR_SAFE
 	mm_segment_t old_fs;
 #endif
 
 	sk = (struct socket *)socket;
+	vec.iov_base = (void *)buffer;
+	vec.iov_len = length;
 
-	iov.iov_base = (void *)buffer;
-	iov.iov_len = (__kernel_size_t)length;
+	msg.msg_flags = 0;
+	iov_iter_init(&msg.msg_iter, READ, (struct iovec *)&vec, 1, length);
+	//iov.iov_base = (void *)buffer;
+	//iov.iov_len = (__kernel_size_t)length;
 
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
 	msg.msg_control = NULL;
 	msg.msg_controllen = 0;
 
@@ -174,7 +177,7 @@ ssize_t ksend(ksocket_t socket, const void *buffer, size_t length, int flags)
 {
 	struct socket *sk;
 	struct msghdr msg;
-	struct iovec iov;
+	struct kvec vec;
 	int len;
 #ifndef KSOCKET_ADDR_SAFE
 	mm_segment_t old_fs;
@@ -182,13 +185,14 @@ ssize_t ksend(ksocket_t socket, const void *buffer, size_t length, int flags)
 
 	sk = (struct socket *)socket;
 
-	iov.iov_base = (void *)buffer;
-	iov.iov_len = (__kernel_size_t)length;
+	vec.iov_base = (void *)buffer;
+	vec.iov_len = length;
+
+	msg.msg_flags = 0;
+	iov_iter_init(&msg.msg_iter, WRITE, (struct iovec *)&vec, 1, length);
 
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
 	msg.msg_control = NULL;
 	msg.msg_controllen = 0;
 
@@ -239,7 +243,7 @@ ssize_t krecvfrom(ksocket_t socket, void * buffer, size_t length,
 {
 	struct socket *sk;
 	struct msghdr msg;
-	struct iovec iov;
+	struct kvec vec;
 	int len;
 #ifndef KSOCKET_ADDR_SAFE
 	mm_segment_t old_fs;
@@ -247,13 +251,14 @@ ssize_t krecvfrom(ksocket_t socket, void * buffer, size_t length,
 
 	sk = (struct socket *)socket;
 
-	iov.iov_base = (void *)buffer;
-	iov.iov_len = (__kernel_size_t)length;
+	vec.iov_base = (void *)buffer;
+	vec.iov_len = length;
+
+	msg.msg_flags = 0;
+	iov_iter_init(&msg.msg_iter, READ, (struct iovec *)&vec, 1, length);
 
 	msg.msg_name = address;
 	msg.msg_namelen = 128;
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
 	msg.msg_control = NULL;
 	msg.msg_controllen = 0;
 	
@@ -280,7 +285,7 @@ ssize_t ksendto(ksocket_t socket, void *message, size_t length,
 {
 	struct socket *sk;
 	struct msghdr msg;
-	struct iovec iov;
+	struct kvec vec;
 	int len;
 #ifndef KSOCKET_ADDR_SAFE
 	mm_segment_t old_fs;
@@ -288,11 +293,11 @@ ssize_t ksendto(ksocket_t socket, void *message, size_t length,
 
 	sk = (struct socket *)socket;
 
-	iov.iov_base = (void *)message;
-	iov.iov_len = (__kernel_size_t)length;
+	vec.iov_base = (void *)message;
+	vec.iov_len = length;
 
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
+	iov_iter_init(&msg.msg_iter, WRITE, (struct iovec *)&vec, 1, length);
+
 	msg.msg_control = NULL;
 	msg.msg_controllen = 0;
 
